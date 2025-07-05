@@ -106,40 +106,33 @@ As the lead developer, my primary objective was to build a reliable, scalable, a
 └── README.md
 ```
 
-Setup & Running the App
-Clone the repository:
+# Setup & Running the App
 
-bash
-Copy
-Edit
+## Clone the repository:
 git clone https://github.com/NJVinay/GamePlanApp.git
-Install dependencies:
 
-bash
-Copy
-Edit
+## Install dependencies:
 npm install
-Configure Firebase:
 
+## Configure Firebase:
 Add your Firebase config in services/firebase.js
 
-Run the app:
-
-bash
-Copy
-Edit
+## Run the app:
 expo start
-Future Improvements
-Add push notifications for task reminders
 
-Integrate analytics to track app usage
+---
 
-Support offline mode with local caching and sync
+# Future Improvements
 
-Enhance UI with animations and accessibility features
+- Add push notifications for task reminders  
+- Integrate analytics to track app usage  
+- Support offline mode with local caching and sync  
+- Enhance UI with animations and accessibility features  
 
-Acknowledgements
+---
+
+# Acknowledgements
+
 Grateful to my project team for their collaboration and to Blekinge Institute of Technology for providing the resources and environment to develop this project.
 
 This project reflects hands-on experience in React Native, Firebase integration, real-time data synchronization, and GPS-based solutions, demonstrating a comprehensive mobile development skill set.
-
