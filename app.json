@@ -1,0 +1,50 @@
+{
+  "expo": {
+    "name": "GamePlan",
+    "slug": "GamePlan",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/logo.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.anonymous.GamePlan",
+      "config": {
+        "googleMapsApiKey": "AIzaSyDFUNL-elICU4F7p_lBhoPZm-78_H1AtYU"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/logo.png",
+        "backgroundColor": "#ffffff",
+        "newArchEnabled": true
+      },
+      "package": "com.anonymous.GamePlan",
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ],
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDFUNL-elICU4F7p_lBhoPZm-78_H1AtYU"
+        }
+      }
+    },
+    "web": {
+      "favicon": "./assets/logo.png"
+    },
+    "plugins": [
+      "expo-font"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "a3fa3d3b-be7b-49e7-82c2-eeb6c20ac67d"
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "695994204932",
+    "project_id": "gameplan-be6a8",
+    "storage_bucket": "gameplan-be6a8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:695994204932:android:6ccc6ef7dc600518738651",
+        "android_client_info": {
+          "package_name": "com.anonymous.GamePlan"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDY0shv_Jupv3m1a-FRzeSB3oyviEWZvjo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
