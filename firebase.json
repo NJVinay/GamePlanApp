@@ -1,19 +1,4 @@
 {
-  "emulators": {
-    "dataconnect": {
-      "dataDir": "dataconnect/.dataconnect/pgliteData"
-    }
-  },
-  "dataconnect": {
-    "source": "dataconnect",
-    "instances": [
-      {
-        "name": "gameplan-main-db", 
-        "region": "us-central1",
-        "tier": "db-f1-micro"
-      }
-    ]
-  },
   "firestore": {
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"

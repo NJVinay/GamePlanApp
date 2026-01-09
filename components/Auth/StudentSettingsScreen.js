@@ -14,7 +14,7 @@ import { useStudentContext } from './StudentContext';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export default function StudentSettingsScreen({ navigation }) {
-  const { studentData, setStudentData } = useStudentContext();
+  const { studentData, setStudentData, updateStudentData } = useStudentContext();
 
   const [name, setName] = useState(studentData?.name || '');
   const [age, setAge] = useState(studentData?.age ? studentData.age.toString() : '');
@@ -55,19 +55,11 @@ export default function StudentSettingsScreen({ navigation }) {
     };
 
     try {
-      await AsyncStorage.setItem('studentData', JSON.stringify(updatedStudent));
-      setStudentData(updatedStudent);
+      // Update in Firebase/Firestore via context
+      await updateStudentData(updatedStudent);
 
-      
-      setName('');
-      setAge('');
-      setGender('');
-      setEmail('');
-      setAddress('');
-      setTrainerId('');
-      setTrainerName('');
-      setSport('');
-      setEmergencyContact('');
+      // Also save to AsyncStorage as backup
+      await AsyncStorage.setItem('studentData', JSON.stringify(updatedStudent));
 
       Alert.alert('Success', 'Profile updated successfully!');
     } catch (error) {
@@ -177,40 +169,42 @@ export default function StudentSettingsScreen({ navigation }) {
 const styles = StyleSheet.create({
   gradient: { flex: 1 },
   container: { padding: 20 },
-  title: { fontSize: 24, color: '#FFFFFF', fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
+  title: { fontSize: 28, color: '#FFFFFF', fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
   section: { marginBottom: 20 },
-  sectionTitle: { fontSize: 18, fontWeight: 'bold', color: '#DA0037', marginBottom: 10 },
+  sectionTitle: { fontSize: 20, fontWeight: 'bold', color: '#DA0037', marginBottom: 10 },
   input: {
     backgroundColor: '#1E1E1E',
     color: '#FFFFFF',
-    padding: 10,
+    padding: 16,
     marginBottom: 15,
-    borderRadius: 8,
-    borderColor: '#333333',
-    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: '#555555',
+    borderWidth: 2,
+    fontSize: 17,
   },
   picker: {
     backgroundColor: '#1E1E1E',
     color: '#FFFFFF',
     marginBottom: 15,
-    borderRadius: 8,
+    borderRadius: 10,
+    fontSize: 17,
   },
   buttonContainer: { flexDirection: 'row', justifyContent: 'space-between' },
   cancelButton: {
     backgroundColor: '#444444',
-    padding: 15,
-    borderRadius: 10,
+    padding: 18,
+    borderRadius: 25,
     flex: 1,
     marginRight: 10,
     alignItems: 'center',
   },
   saveButton: {
     backgroundColor: '#DA0037',
-    padding: 15,
-    borderRadius: 10,
+    padding: 18,
+    borderRadius: 25,
     flex: 1,
     alignItems: 'center',
   },
-  cancelButtonText: { color: '#FFFFFF', fontWeight: 'bold' },
-  saveButtonText: { color: '#FFFFFF', fontWeight: 'bold' },
+  cancelButtonText: { color: '#FFFFFF', fontWeight: 'bold', fontSize: 20 },
+  saveButtonText: { color: '#FFFFFF', fontWeight: 'bold', fontSize: 20 },
 });

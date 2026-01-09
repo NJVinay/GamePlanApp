@@ -80,7 +80,7 @@ export default function TrainerProfileScreen({ navigation, route }) {
             Training Address: {profileData?.trainingCenter || 'Kungsmarken'}
           </Text>
           <Text style={styles.infoText}>
-            Specialty: {profileData?.sport || 'Cricket'}
+            Specialty: {profileData?.sports || 'N/A'}
           </Text>
         </View>
       </View>
@@ -103,10 +103,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  profileInitial: { fontSize: 36, color: '#FFFFFF', fontWeight: 'bold' },
-  profileName: { fontSize: 24, fontWeight: 'bold', color: '#FFFFFF' },
-  profileId: { fontSize: 16, color: '#CCCCCC' },
+  profileInitial: { fontSize: 48, color: '#FFFFFF', fontWeight: 'bold' },
+  profileName: { fontSize: 28, fontWeight: 'bold', color: '#FFFFFF' },
+  profileId: { fontSize: 18, color: '#CCCCCC' },
   infoSection: { padding: 15, borderRadius: 10, backgroundColor: '#1E1E1E' },
-  infoTitle: { fontSize: 18, color: '#DA0037', marginBottom: 10 },
-  infoText: { fontSize: 16, color: '#FFFFFF', marginBottom: 5 },
+  infoTitle: { fontSize: 20, color: '#DA0037', marginBottom: 10, fontWeight: 'bold' },
+  infoText: { fontSize: 18, color: '#FFFFFF', marginBottom: 5 },
 });

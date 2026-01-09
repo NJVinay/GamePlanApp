@@ -9,14 +9,12 @@ import {
   ScrollView,
   ActivityIndicator,
   Alert,
-  Dimensions,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '../../utils/firebaseConfig';
 import { doc, getDoc } from 'firebase/firestore';
-
-const { width: screenWidth } = Dimensions.get('window');
+import { getResponsiveSize, getBannerHeight, getMaxContentWidth } from '../../utils/responsive';
 
 export default function LoginScreen({ navigation }) {
   const [isTrainer, setIsTrainer] = useState(true);
@@ -24,6 +22,10 @@ export default function LoginScreen({ navigation }) {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const { isWeb, isDesktop } = getResponsiveSize();
+  const bannerHeight = getBannerHeight();
+  const maxContentWidth = getMaxContentWidth();
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -70,11 +72,18 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <LinearGradient colors={['#171717', '#444444']} style={styles.gradient}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <ScrollView
+        contentContainerStyle={[
+          styles.scrollContainer,
+          { maxWidth: maxContentWidth }
+        ]}
+        showsVerticalScrollIndicator={true}
+        style={{ flex: 1 }}
+      >
         <View style={styles.imageContainer}>
           <Image
             source={require('../../assets/banner.png')}
-            style={styles.bannerImage}
+            style={[styles.bannerImage, { height: bannerHeight }]}
             resizeMode="contain"
           />
         </View>
@@ -153,6 +162,14 @@ export default function LoginScreen({ navigation }) {
             >
               <Text style={styles.signUpText}>Sign Up</Text>
             </TouchableOpacity>
+
+            {/* Note about app conversion */}
+            <View style={styles.noteContainer}>
+              <Text style={styles.noteText}>
+                ℹ️ This app was initially developed as a mobile application (functional for both Android/iOS)
+                and has been converted to a web app to showcase full-stack development capabilities and project skills.
+              </Text>
+            </View>
           </>
         )}
       </ScrollView>
@@ -162,11 +179,22 @@ export default function LoginScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   gradient: { flex: 1 },
-  scrollContainer: { flexGrow: 1, padding: 20, alignItems: 'center' },
+  scrollContainer: {
+    flexGrow: 1,
+    padding: 20,
+    alignItems: 'center',
+    minHeight: '100%',
+    paddingBottom: 40,
+    alignSelf: 'center',
+    width: '100%',
+  },
   imageContainer: { width: '100%', alignItems: 'center', marginBottom: 20 },
-  bannerImage: { width: screenWidth * 1, height: screenWidth * 0.6 },
+  bannerImage: {
+    width: '100%',
+    maxWidth: 600,
+  },
   loadingContainer: { alignItems: 'center', justifyContent: 'center', flex: 1 },
-  loadingText: { marginTop: 10, color: '#EDEDED', fontSize: 16, fontStyle: 'italic' },
+  loadingText: { marginTop: 10, color: '#EDEDED', fontSize: 18, fontStyle: 'italic' },
   toggleBox: {
     flexDirection: 'row',
     borderWidth: 2,
@@ -177,31 +205,48 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     width: '100%',
   },
-  toggleButton: { flex: 1, paddingVertical: 15, alignItems: 'center', justifyContent: 'center' },
+  toggleButton: { flex: 1, paddingVertical: 16, alignItems: 'center', justifyContent: 'center' },
   activeToggle: { backgroundColor: '#DA0037' },
-  toggleText: { fontSize: 16, color: '#EDEDED', fontWeight: 'bold' },
+  toggleText: { fontSize: 18, color: '#EDEDED', fontWeight: 'bold' },
   activeToggleText: { color: '#FFFFFF', fontWeight: 'bold' },
-  label: { fontSize: 16, color: '#EDEDED', alignSelf: 'flex-start', marginBottom: 10 },
+  label: { fontSize: 18, color: '#EDEDED', alignSelf: 'flex-start', marginBottom: 10, fontWeight: '600' },
   input: {
     borderWidth: 2,
     borderColor: '#555555',
     borderRadius: 10,
-    padding: 12,
+    padding: 16,
     marginBottom: 20,
     backgroundColor: '#1E1E1E',
     color: '#FFFFFF',
+    fontSize: 17,
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
   },
-  passwordInput: { flex: 1, color: '#FFFFFF', fontSize: 16 },
-  showPassword: { fontSize: 16, color: '#CCCCCC', marginLeft: 10 },
-  forgotPassword: { color: '#EDEDED', alignSelf: 'flex-end', fontSize: 14, marginBottom: 20 },
-  loginButton: { backgroundColor: '#DA0037', paddingVertical: 15, borderRadius: 25, alignItems: 'center', width: '100%', marginBottom: 20 },
-  loginButtonText: { color: '#FFFFFF', fontSize: 18, fontWeight: 'bold' },
+  passwordInput: { flex: 1, color: '#FFFFFF', fontSize: 17 },
+  showPassword: { fontSize: 17, color: '#CCCCCC', marginLeft: 10 },
+  forgotPassword: { color: '#EDEDED', alignSelf: 'flex-end', fontSize: 16, marginBottom: 20 },
+  loginButton: { backgroundColor: '#DA0037', paddingVertical: 18, borderRadius: 25, alignItems: 'center', width: '100%', marginBottom: 20 },
+  loginButtonText: { color: '#FFFFFF', fontSize: 20, fontWeight: 'bold' },
   separator: { flexDirection: 'row', alignItems: 'center', marginBottom: 20, width: '100%' },
   line: { flex: 1, height: 1, backgroundColor: '#555555' },
-  orText: { marginHorizontal: 10, color: '#EDEDED' },
-  signUpButton: { borderWidth: 2, borderColor: '#EDEDED', paddingVertical: 15, borderRadius: 25, alignItems: 'center', backgroundColor: '#444444', width: '100%' },
-  signUpText: { color: '#EDEDED', fontSize: 18, fontWeight: 'bold' },
+  orText: { marginHorizontal: 10, color: '#EDEDED', fontSize: 16 },
+  noteContainer: {
+    marginTop: 20,
+    padding: 18,
+    backgroundColor: 'rgba(218, 0, 55, 0.1)',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(218, 0, 55, 0.3)',
+    width: '100%',
+  },
+  noteText: {
+    color: '#CCCCCC',
+    fontSize: 16,
+    textAlign: 'center',
+    lineHeight: 22,
+    fontStyle: 'italic'
+  },
+  signUpButton: { borderWidth: 2, borderColor: '#EDEDED', paddingVertical: 18, borderRadius: 25, alignItems: 'center', backgroundColor: '#444444', width: '100%' },
+  signUpText: { color: '#EDEDED', fontSize: 20, fontWeight: 'bold' },
 });

@@ -10,10 +10,10 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';// ref: https://reactnative.dev/docs/asyncstorage
-import { useTrainerContext } from './TrainerContext'; 
+import { useTrainerContext } from './TrainerContext';
 
 export default function SettingsScreen({ navigation }) {
-  const { trainerData, updateTrainerData } = useTrainerContext(); 
+  const { trainerData, updateTrainerData } = useTrainerContext();
   const { trainerID } = trainerData;
 
   const [fullName, setFullName] = useState(trainerData?.name || '');
@@ -42,25 +42,25 @@ export default function SettingsScreen({ navigation }) {
     };
 
     try {
-      
+
       await updateTrainerData(updatedTrainerData);
 
-      
+
       Alert.alert('Success', 'Profile updated successfully!');
     } catch (error) {
       console.error('Error updating trainer data:', error.message);
 
-      
+
       await AsyncStorage.setItem('trainerData', JSON.stringify(updatedTrainerData));
 
-      
+
       Alert.alert(
         'Notice',
         'Profile updated locally but not synced with the server. Please check your permissions or network.'
       );
     }
 
-    
+
     setFullName('');
     setTrainerAge('');
     setSpecialty('');
@@ -144,18 +144,18 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: 20,
   },
-  profileInitial: { fontSize: 36, color: '#FFFFFF', fontWeight: 'bold' },
-  sectionTitle: { fontSize: 18, color: '#DA0037', marginBottom: 10 },
+  profileInitial: { fontSize: 48, color: '#FFFFFF', fontWeight: 'bold' },
+  sectionTitle: { fontSize: 20, color: '#DA0037', marginBottom: 10, fontWeight: 'bold' },
   input: {
     backgroundColor: '#1E1E1E',
-    padding: 12,
+    padding: 16,
     borderRadius: 10,
     marginBottom: 15,
     color: '#FFFFFF',
-    fontSize: 16,
-    borderWidth: 1,
+    fontSize: 17,
+    borderWidth: 2,
     borderColor: '#555555',
   },
-  saveButton: { backgroundColor: '#DA0037', padding: 15, borderRadius: 10, marginTop: 20 },
-  saveButtonText: { color: '#FFFFFF', fontSize: 16, fontWeight: 'bold', textAlign: 'center' },
+  saveButton: { backgroundColor: '#DA0037', padding: 18, borderRadius: 25, marginTop: 20 },
+  saveButtonText: { color: '#FFFFFF', fontSize: 20, fontWeight: 'bold', textAlign: 'center' },
 });

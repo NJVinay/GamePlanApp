@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Image, View, Text, StyleSheet, Alert } from 'react-native';
+import { Image, View, Text, StyleSheet, Alert, Platform } from 'react-native';
 import * as Location from 'expo-location';
 import { StudentProvider } from './components/Auth/StudentContext';
 import { TrainerProvider } from './components/Auth/TrainerContext';
@@ -67,18 +67,19 @@ export default function App() {
   }, []);
 
   return (
-    <StudentProvider>
-      <TrainerProvider>
-        <NavigationContainer>
-          <Stack.Navigator
-            initialRouteName="Loading"
-            screenOptions={{
-              headerStyle: { backgroundColor: '#171717' },
-              headerTintColor: '#fff',
-              headerTitleAlign: 'center',
-              headerTitle: () => <HeaderLogo />,
-            }}
-          >
+    <View style={{ flex: 1, height: Platform.OS === 'web' ? '100vh' : '100%' }}>
+      <StudentProvider>
+        <TrainerProvider>
+          <NavigationContainer>
+            <Stack.Navigator
+              initialRouteName="Loading"
+              screenOptions={{
+                headerStyle: { backgroundColor: '#171717' },
+                headerTintColor: '#fff',
+                headerTitleAlign: 'center',
+                headerTitle: () => <HeaderLogo />,
+              }}
+            >
             <Stack.Screen
               name="Loading"
               component={LoadingScreen}
@@ -177,6 +178,7 @@ export default function App() {
         </NavigationContainer>
       </TrainerProvider>
     </StudentProvider>
+    </View>
   );
 }
 

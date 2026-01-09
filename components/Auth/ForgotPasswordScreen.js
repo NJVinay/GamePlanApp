@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { sendPasswordResetEmail } from 'firebase/auth';
-import { auth } from '../../utils/firebaseConfig'; 
+import { auth } from '../../utils/firebaseConfig';
 // ref: https://www.bacancytechnology.com/blog/react-native-firebase-auth
 // ref: https://amanhimself.dev/blog/implement-forgot-password-firebase-react-native
 export default function ForgotPasswordScreen() {
@@ -22,7 +22,7 @@ export default function ForgotPasswordScreen() {
     }
 
     try {
-      
+
       await sendPasswordResetEmail(auth, email);
       Alert.alert(
         'Success',
@@ -36,10 +36,10 @@ export default function ForgotPasswordScreen() {
       );
     }
   };
-// ref:https://docs.expo.dev/versions/latest/sdk/linear-gradient    
+  // ref:https://docs.expo.dev/versions/latest/sdk/linear-gradient    
   return (
     <LinearGradient
-      colors={['#171717', '#444444']} 
+      colors={['#171717', '#444444']}
     >
       <View style={styles.container}>
         <View style={styles.header}>
@@ -89,14 +89,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   heading: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: 'bold',
     color: '#EDEDED',
     textTransform: 'uppercase',
     letterSpacing: 1.5,
   },
   subheading: {
-    fontSize: 14,
+    fontSize: 16,
     color: '#EDEDED',
     textAlign: 'center',
     marginTop: 10,
@@ -107,26 +107,26 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   label: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#EDEDED',
-    marginBottom: 5,
+    marginBottom: 8,
     fontWeight: '600',
   },
   inputContainer: {
-    borderWidth: 1,
-    borderColor: '#444444',
+    borderWidth: 2,
+    borderColor: '#555555',
     borderRadius: 10,
-    padding: 6,
-    backgroundColor: '#444444',
+    padding: 10,
+    backgroundColor: '#1E1E1E',
   },
   input: {
-    fontSize: 16,
+    fontSize: 17,
     color: '#EDEDED',
     paddingHorizontal: 10,
   },
   resetButton: {
     backgroundColor: '#DA0037',
-    padding: 15,
+    padding: 18,
     borderRadius: 25,
     alignItems: 'center',
     marginTop: 20,
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   },
   resetButtonText: {
     color: '#EDEDED',
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     textTransform: 'uppercase',
   },

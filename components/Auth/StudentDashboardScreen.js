@@ -68,7 +68,7 @@ export default function StudentDashboardScreen({ navigation, route, trainerLocat
       console.error('Error loading tasks or attendance:', error);
     }
   };
-//ref: 
+  //ref: 
   const checkLocation = async (latitude, longitude, radius) => {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
@@ -296,21 +296,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  profileInitial: { fontSize: 40, color: '#FFFFFF', fontWeight: 'bold' },
-  profileName: { fontSize: 20, fontWeight: 'bold', color: '#FFFFFF' },
-  profileId: { fontSize: 16, color: '#CCCCCC' },
+  profileInitial: { fontSize: 48, color: '#FFFFFF', fontWeight: 'bold' },
+  profileName: { fontSize: 24, fontWeight: 'bold', color: '#FFFFFF' },
+  profileId: { fontSize: 18, color: '#CCCCCC' },
   profileButton: {
     backgroundColor: '#DA0037',
-    padding: 10,
+    padding: 14,
     borderRadius: 10,
     marginBottom: 20,
     alignItems: 'center',
   },
-  profileButtonText: { color: '#FFFFFF', fontWeight: 'bold', fontSize: 16 },
+  profileButtonText: { color: '#FFFFFF', fontWeight: 'bold', fontSize: 18 },
   streakBadge: { alignItems: 'center', marginVertical: 20 },
-  streakText: { color: '#DA0037', fontSize: 16, fontWeight: 'bold' },
-  resetButton: { marginTop: 10, paddingHorizontal: 15, paddingVertical: 5, backgroundColor: '#444444', borderRadius: 10 },
-  resetButtonText: { color: '#FFFFFF', fontSize: 14, fontWeight: 'bold' },
+  streakText: { color: '#DA0037', fontSize: 18, fontWeight: 'bold' },
+  resetButton: { marginTop: 10, paddingHorizontal: 18, paddingVertical: 8, backgroundColor: '#444444', borderRadius: 10 },
+  resetButtonText: { color: '#FFFFFF', fontSize: 16, fontWeight: 'bold' },
   calendar: { marginBottom: 20 },
   toggleContainer: { flexDirection: 'row', justifyContent: 'space-around', marginBottom: 20 },
   toggleButton: {

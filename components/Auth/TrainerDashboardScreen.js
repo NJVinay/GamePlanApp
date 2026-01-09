@@ -26,7 +26,7 @@ export default function TrainerDashboardScreen({ navigation, route }) {
       navigation.replace('Login');
       return;
     }
-//ref:https://thelinuxcode.com/how-to-build-a-react-native-flatlist-with-realtime-searching-ability/ 
+    //ref:https://thelinuxcode.com/how-to-build-a-react-native-flatlist-with-realtime-searching-ability/ 
     const fetchStudents = async () => {
       try {
         const studentsRef = collection(db, 'students');
@@ -35,11 +35,11 @@ export default function TrainerDashboardScreen({ navigation, route }) {
 
         const studentsData = querySnapshot.docs.map((doc) => ({
           ...doc.data(),
-          id: doc.id, 
+          id: doc.id,
           streak: doc.data()?.streak || 0,
         }));
 
-        
+
         const uniqueStudents = Array.from(new Map(studentsData.map((s) => [s.id, s])).values());
 
         if (uniqueStudents.length === 0) {
@@ -192,11 +192,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 15,
   },
-  studentImageInitial: { fontSize: 20, color: '#FFFFFF', fontWeight: 'bold' },
+  studentImageInitial: { fontSize: 24, color: '#FFFFFF', fontWeight: 'bold' },
   studentDetails: { flex: 1 },
-  studentName: { fontSize: 16, color: '#FFFFFF', fontWeight: 'bold' },
-  studentRole: { fontSize: 14, color: '#CCCCCC' },
-  studentID: { fontSize: 12, color: '#AAAAAA' },
+  studentName: { fontSize: 18, color: '#FFFFFF', fontWeight: 'bold' },
+  studentRole: { fontSize: 16, color: '#CCCCCC' },
+  studentID: { fontSize: 14, color: '#AAAAAA' },
   streakBadge: {
     marginTop: 5,
     backgroundColor: '#333333',
@@ -205,5 +205,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     alignSelf: 'flex-start',
   },
-  streakText: { fontSize: 12, color: '#FFFFFF' },
+  streakText: { fontSize: 14, color: '#FFFFFF' },
 });

@@ -3,16 +3,19 @@ import {
   initializeAuth,
   getAuth,
   getReactNativePersistence,
+  browserLocalPersistence,
   signInWithEmailAndPassword,
   signOut,
   sendPasswordResetEmail,
 } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Platform } from 'react-native';
 import {
   getFirestore,
   collection,
   addDoc,
   getDocs,
+  getDoc,
   updateDoc,
   deleteDoc,
   doc,
@@ -24,24 +27,49 @@ import {
 } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
-// Firebase configuration
+// Firebase configuration from environment variables
 const firebaseConfig = {
-  apiKey: "AIzaSyDY0shv_Jupv3m1a-FRzeSB3oyviEWZvjo",
-  authDomain: "gameplan-be6a8.firebaseapp.com",
-  projectId: "gameplan-be6a8",
-  storageBucket: "gameplan-be6a8.appspot.com",
-  messagingSenderId: "695994204932",
-  appId: "1:695994204932:android:6ccc6ef7dc600518738651",
-  measurementId: "G-788DS1JWN5",
+  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID,
 }; 
 
 // Initialize Firebase app
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
-// Firebase instances
-export const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(AsyncStorage),
-});
+// Firebase instances - handle web vs native auth persistence
+let auth;
+try {
+  if (Platform.OS === 'web') {
+    // For web, try to get existing auth or initialize with browser persistence
+    try {
+      auth = getAuth(app);
+    } catch {
+      auth = initializeAuth(app, {
+        persistence: browserLocalPersistence,
+      });
+    }
+  } else {
+    // For mobile, use AsyncStorage persistence
+    try {
+      auth = getAuth(app);
+    } catch {
+      auth = initializeAuth(app, {
+        persistence: getReactNativePersistence(AsyncStorage),
+      });
+    }
+  }
+} catch (error) {
+  console.error('Firebase auth initialization error:', error);
+  // Fallback to just getting auth
+  auth = getAuth(app);
+}
+
+export { auth };
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 

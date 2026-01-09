@@ -36,7 +36,8 @@
       }
     },
     "web": {
-      "favicon": "./assets/logo.png"
+      "favicon": "./assets/logo.png",
+      "bundler": "metro"
     },
     "plugins": [
       "expo-font"

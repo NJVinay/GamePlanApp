@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
+    <title>GamePlan - Empowering Your Path to Peak Performance</title>
+    <style>
+      *, *::before, *::after {
+        box-sizing: border-box;
+      }
+      html {
+        height: 100%;
+        overflow-y: scroll; /* Always show scrollbar */
+      }
+      body {
+        width: 100%;
+        min-height: 100%;
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+          'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background-color: #171717;
+      }
+      #root {
+        width: 100%;
+        min-height: 100vh;
+      }
+      /* Custom scrollbar styling */
+      ::-webkit-scrollbar {
+        width: 16px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #1a1a1a;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #DA0037;
+        border-radius: 8px;
+        border: 3px solid #1a1a1a;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #ff0044;
+      }
+      /* Firefox scrollbar */
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: #DA0037 #1a1a1a;
+      }
+      
+      /* Custom select/picker dropdown styling */
+      select {
+        background-color: #1E1E1E !important;
+        color: #FFFFFF !important;
+        border: 2px solid #555555 !important;
+        border-radius: 10px !important;
+        padding: 16px !important;
+        font-size: 16px !important;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+      }
+      
+      select option {
+        background-color: #1E1E1E !important;
+        color: #FFFFFF !important;
+        padding: 12px !important;
+      }
+      
+      select option:hover,
+      select option:focus,
+      select option:checked {
+        background-color: #DA0037 !important;
+        color: #FFFFFF !important;
+      }
+      
+      /* Remove white background from select on focus */
+      select:focus {
+        background-color: #1E1E1E !important;
+        outline: none;
+        border-color: #DA0037 !important;
+      }
+      
+      /* Button hover effects and transitions */
+      button, 
+      [role="button"],
+      input[type="submit"],
+      input[type="button"] {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+      }
+      
+      button:hover,
+      [role="button"]:hover,
+      input[type="submit"]:hover,
+      input[type="button"]:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(218, 0, 55, 0.3);
+      }
+      
+      button:active,
+      [role="button"]:active {
+        transform: translateY(0);
+        box-shadow: 0 4px 8px rgba(218, 0, 55, 0.2);
+      }
+      
+      /* Input focus effects */
+      input:not([type="checkbox"]):not([type="radio"]),
+      textarea {
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      }
+      
+      input:not([type="checkbox"]):not([type="radio"]):focus,
+      textarea:focus {
+        border-color: #DA0037 !important;
+        box-shadow: 0 0 0 3px rgba(218, 0, 55, 0.1);
+      }
+      
+      /* Smooth page transitions */
+      * {
+        transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+        transition-duration: 0.2s;
+        transition-timing-function: ease-in-out;
+      }
+      
+      /* Disable transitions on specific elements */
+      input, textarea, select {
+        transition-property: border-color, box-shadow !important;
+      }
+      
+      /* Link hover effects */
+      a {
+        transition: color 0.2s ease, text-decoration 0.2s ease;
+      }
+      
+      a:hover {
+        color: #ff0044 !important;
+      }
+      
+      /* Card hover effects */
+      [style*="backgroundColor: '#1E1E1E'"],
+      [style*="backgroundColor: #1E1E1E"] {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      
+      /* Loading spinner animation */
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+      }
+      
+      /* Fade in animation */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      /* Apply fade in to content */
+      #root > * {
+        animation: fadeIn 0.5s ease-out;
+      }
+      
+      /* Improve text selection */
+      ::selection {
+        background-color: #DA0037;
+        color: #FFFFFF;
+      }
+      
+      ::-moz-selection {
+        background-color: #DA0037;
+        color: #FFFFFF;
+      }
+      
+      /* Accessibility improvements */
+      *:focus-visible {
+        outline: 2px solid #DA0037;
+        outline-offset: 2px;
+      }
+      
+      /* Smooth scrolling */
+      html {
+        scroll-behavior: smooth;
+      }
+      
+      /* Better image loading */
+      img {
+        max-width: 100%;
+        height: auto;
+      }
+      
+      /* Prevent layout shift */
+      img[src]:not([src=""]) {
+        aspect-ratio: attr(width) / attr(height);
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+  </body>
+</html>

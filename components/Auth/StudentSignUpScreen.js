@@ -14,7 +14,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Picker } from '@react-native-picker/picker';
 import { auth, db } from '../../utils/firebaseConfig';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { doc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
 //ref: https://dev.to/zolomohan/react-native-firebase-email-password-authentication-3889
 export default function StudentSignUpScreen({ navigation }) {
   const [formData, setFormData] = useState({
@@ -24,13 +24,13 @@ export default function StudentSignUpScreen({ navigation }) {
     password: '',
     confirmPassword: '',
     trainerID: '',
-    address: '',
     sport: '',
     gender: '',
     emergencyContact: '',
     studentID: '',
   });
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleInputChange = (field, value) => {
     setFormData((prevState) => ({ ...prevState, [field]: value }));
@@ -53,28 +53,80 @@ export default function StudentSignUpScreen({ navigation }) {
       confirmPassword,
       trainerID,
       studentID,
+      emergencyContact,
     } = formData;
 
-    if (
-      !fullName ||
-      !age ||
-      !sport ||
-      !gender ||
-      !email ||
-      !password ||
-      !confirmPassword ||
-      !trainerID ||
-      !studentID
-    ) {
-      Alert.alert('Error', 'Please fill in all mandatory fields.');
+    // Name validation
+    if (!fullName || fullName.trim().length < 2) {
+      setErrorMessage('Please enter a valid full name (at least 2 characters).');
+      Alert.alert('Error', 'Please enter a valid full name (at least 2 characters).');
+      return false;
+    }
+
+    // Age validation
+    if (!age || isNaN(age) || parseInt(age) < 5 || parseInt(age) > 100) {
+      setErrorMessage('Please enter a valid age (5-100).');
+      Alert.alert('Error', 'Please enter a valid age (5-100).');
+      return false;
+    }
+
+    // Gender validation
+    if (!gender || gender === '') {
+      setErrorMessage('Please select your gender.');
+      Alert.alert('Error', 'Please select your gender.');
+      return false;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
+      setErrorMessage('Please enter a valid email address.');
+      Alert.alert('Error', 'Please enter a valid email address.');
+      return false;
+    }
+
+    // Password validation
+    if (!password || password.length < 6) {
+      setErrorMessage('Password must be at least 6 characters long.');
+      Alert.alert('Error', 'Password must be at least 6 characters long.');
       return false;
     }
 
     if (password !== confirmPassword) {
+      setErrorMessage('Passwords do not match.');
       Alert.alert('Error', 'Passwords do not match.');
       return false;
     }
 
+    // Trainer ID validation
+    if (!trainerID || trainerID.trim().length === 0) {
+      setErrorMessage('Please enter your trainer ID.');
+      Alert.alert('Error', 'Please enter your trainer ID.');
+      return false;
+    }
+
+    // Student ID validation
+    if (!studentID || studentID.trim().length === 0) {
+      setErrorMessage('Please generate a student ID.');
+      Alert.alert('Error', 'Please generate a student ID.');
+      return false;
+    }
+
+    // Sport validation
+    if (!sport || sport === '') {
+      setErrorMessage('Please select a sport.');
+      Alert.alert('Error', 'Please select a sport.');
+      return false;
+    }
+
+    // Emergency contact validation
+    if (emergencyContact && emergencyContact.length > 0 && (emergencyContact.length < 10 || isNaN(emergencyContact))) {
+      setErrorMessage('Please enter a valid emergency contact number (at least 10 digits).');
+      Alert.alert('Error', 'Please enter a valid emergency contact number (at least 10 digits).');
+      return false;
+    }
+
+    setErrorMessage('');
     return true;
   };
 
@@ -82,19 +134,22 @@ export default function StudentSignUpScreen({ navigation }) {
     if (!validateForm()) return;
 
     setLoading(true);
+    setErrorMessage('');
 
     try {
-      
-      const trainerDocRef = doc(db, 'trainers', formData.trainerID);
-      const trainerDoc = await getDoc(trainerDocRef);
+      // Query trainers collection to find trainer with matching trainerID field
+      const trainersRef = collection(db, 'trainers');
+      const q = query(trainersRef, where('trainerID', '==', formData.trainerID));
+      const querySnapshot = await getDocs(q);
 
-      if (!trainerDoc.exists()) {
-        Alert.alert('Success', "Student account created successfully");
+      if (querySnapshot.empty) {
+        const errorMsg = 'Trainer ID not found. Please check and try again.';
+        setErrorMessage(errorMsg);
+        Alert.alert('Error', errorMsg);
         setLoading(false);
         return;
       }
 
-      
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         formData.email,
@@ -102,18 +157,17 @@ export default function StudentSignUpScreen({ navigation }) {
       );
       const user = userCredential.user;
 
-     
+
       const studentData = {
         name: formData.fullName,
         age: parseInt(formData.age, 10),
         email: formData.email,
         trainerID: formData.trainerID,
         studentID: formData.studentID,
-        address: formData.address,
         sport: formData.sport,
         gender: formData.gender,
         emergencyContact: formData.emergencyContact,
-        image: 'https://via.placeholder.com/150', 
+        image: 'https://via.placeholder.com/150',
       };
 
       await setDoc(doc(db, 'students', user.uid), studentData);
@@ -122,13 +176,20 @@ export default function StudentSignUpScreen({ navigation }) {
       navigation.navigate('Login');
     } catch (error) {
       console.error('Error saving student data:', error);
+      console.error('Error code:', error.code);
+      console.error('Error message:', error.message);
+
+      let errorMsg = '';
       if (error.code === 'auth/email-already-in-use') {
-        Alert.alert('Error', 'This email is already in use. Please use a different email.');
+        errorMsg = 'This email is already in use. Please use a different email.';
       } else if (error.code === 'permission-denied') {
-        Alert.alert('Error', 'You do not have permission to perform this operation.');
+        errorMsg = 'You do not have permission to perform this operation.';
       } else {
-        Alert.alert('Error', `Failed to save data: ${error.message}`);
+        errorMsg = `Failed to save data: ${error.code || error.message}`;
       }
+
+      setErrorMessage(errorMsg);
+      Alert.alert('Error', errorMsg);
     } finally {
       setLoading(false);
     }
@@ -141,6 +202,13 @@ export default function StudentSignUpScreen({ navigation }) {
         <Text style={styles.subheading}>
           Create your student profile and start your sports journey
         </Text>
+
+        {/* Error Message Display */}
+        {errorMessage ? (
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorText}>{errorMessage}</Text>
+          </View>
+        ) : null}
 
         {/* Full Name */}
         <Text style={styles.label}>Full Name</Text>
@@ -170,12 +238,14 @@ export default function StudentSignUpScreen({ navigation }) {
             selectedValue={formData.gender}
             onValueChange={(value) => handleInputChange('gender', value)}
             style={styles.picker}
+            itemStyle={Platform.OS === 'ios' ? { color: '#000000' } : undefined}
           >
-            <Picker.Item label="Select Gender" value="" />
-            <Picker.Item label="Male" value="Male" />
-            <Picker.Item label="Female" value="Female" />
-            <Picker.Item label="Prefer not to say" value="Prefer not to say" />
+            <Picker.Item label="Select Gender" value="" color="#888888" />
+            <Picker.Item label="Male" value="Male" color="#000000" />
+            <Picker.Item label="Female" value="Female" color="#000000" />
+            <Picker.Item label="Prefer not to say" value="Prefer not to say" color="#000000" />
           </Picker>
+          <Text style={styles.pickerArrow}>▼</Text>
         </View>
 
         {/* Email Address */}
@@ -200,6 +270,7 @@ export default function StudentSignUpScreen({ navigation }) {
           onChangeText={(value) => handleInputChange('password', value)}
           secureTextEntry
         />
+        <Text style={styles.hintText}>Minimum 6 characters with letters and numbers</Text>
 
         {/* Confirm Password */}
         <Text style={styles.label}>Confirm Password</Text>
@@ -237,16 +308,6 @@ export default function StudentSignUpScreen({ navigation }) {
           </TouchableOpacity>
         </View>
 
-        {/* Address */}
-        <Text style={styles.label}>Address</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your address"
-          placeholderTextColor="#CCCCCC"
-          value={formData.address}
-          onChangeText={(value) => handleInputChange('address', value)}
-        />
-
         {/* Sport */}
         <Text style={styles.label}>Sport</Text>
         <View style={styles.pickerContainer}>
@@ -254,14 +315,16 @@ export default function StudentSignUpScreen({ navigation }) {
             selectedValue={formData.sport}
             onValueChange={(value) => handleInputChange('sport', value)}
             style={styles.picker}
+            itemStyle={Platform.OS === 'ios' ? { color: '#000000' } : undefined}
           >
-            <Picker.Item label="Select Sport" value="" />
+            <Picker.Item label="Select Sport" value="" color="#888888" />
             {['Badminton', 'Basketball', 'Cricket', 'Cycling', 'Football', 'Swimming'].map(
               (sportOption) => (
-                <Picker.Item key={sportOption} label={sportOption} value={sportOption} />
+                <Picker.Item key={sportOption} label={sportOption} value={sportOption} color="#000000" />
               )
             )}
           </Picker>
+          <Text style={styles.pickerArrow}>▼</Text>
         </View>
 
         {/* Emergency Contact */}
@@ -305,26 +368,49 @@ export default function StudentSignUpScreen({ navigation }) {
 const styles = StyleSheet.create({
   gradient: { flex: 1 },
   scrollContainer: { flexGrow: 1, padding: 20 },
-  heading: { fontSize: 28, fontWeight: 'bold', color: '#EDEDED', textAlign: 'center', marginBottom: 10 },
-  subheading: { fontSize: 16, textAlign: 'center', color: '#CCCCCC', marginBottom: 20 },
-  label: { fontSize: 16, color: '#EDEDED', marginBottom: 5 },
+  heading: { fontSize: 34, fontWeight: 'bold', color: '#EDEDED', textAlign: 'center', marginBottom: 10 },
+  subheading: { fontSize: 18, textAlign: 'center', color: '#CCCCCC', marginBottom: 20 },
+  errorContainer: { backgroundColor: '#FF4444', padding: 14, borderRadius: 10, marginBottom: 15 },
+  errorText: { color: '#FFFFFF', fontSize: 16, textAlign: 'center', fontWeight: '600' },
+  label: { fontSize: 18, color: '#EDEDED', marginBottom: 8, fontWeight: '600' },
+  hintText: { fontSize: 14, color: '#AAAAAA', marginTop: -15, marginBottom: 20, fontStyle: 'italic' },
   input: {
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: '#555555',
     borderRadius: 10,
-    padding: 12,
+    padding: 16,
     marginBottom: 20,
     backgroundColor: '#1E1E1E',
     color: '#FFFFFF',
+    fontSize: 17,
   },
   studentIDContainer: { flexDirection: 'row', alignItems: 'center', marginBottom: 20 },
-  generateButton: { backgroundColor: '#DA0037', padding: 10, borderRadius: 10, marginLeft: 10 },
-  generateButtonText: { color: '#FFFFFF', fontWeight: 'bold' },
-  pickerContainer: { borderWidth: 1, borderColor: '#555555', borderRadius: 10, backgroundColor: '#1E1E1E', marginBottom: 20 },
-  picker: { color: '#FFFFFF' },
-  signupButton: { backgroundColor: '#DA0037', padding: 15, borderRadius: 25, alignItems: 'center', marginBottom: 15 },
-  signupButtonText: { color: '#FFFFFF', fontSize: 16, fontWeight: 'bold' },
-  cancelButton: { borderWidth: 1, borderColor: '#CCCCCC', padding: 15, borderRadius: 25, alignItems: 'center', marginBottom: 20 },
-  cancelButtonText: { color: '#CCCCCC', fontSize: 16, fontWeight: 'bold' },
-  loginRedirect: { textAlign: 'center', color: '#DA0037', fontSize: 14, marginTop: 10, textDecorationLine: 'underline' },
+  generateButton: { backgroundColor: '#DA0037', padding: 14, borderRadius: 10, marginLeft: 10 },
+  generateButtonText: { color: '#FFFFFF', fontWeight: 'bold', fontSize: 18 },
+  pickerContainer: {
+    borderWidth: 2,
+    borderColor: '#555555',
+    borderRadius: 10,
+    backgroundColor: '#1E1E1E',
+    marginBottom: 20,
+    position: 'relative',
+    overflow: 'hidden'
+  },
+  picker: {
+    color: '#FFFFFF',
+    height: 54,
+    backgroundColor: '#1E1E1E',
+    fontSize: 17,
+    ...(Platform.OS === 'web' && {
+      appearance: 'none',
+      WebkitAppearance: 'none',
+      MozAppearning: 'none',
+    })
+  },
+  pickerArrow: { position: 'absolute', right: 18, top: 18, color: '#EDEDED', fontSize: 18, pointerEvents: 'none', fontWeight: 'bold' },
+  signupButton: { backgroundColor: '#DA0037', padding: 18, borderRadius: 25, alignItems: 'center', marginBottom: 15 },
+  signupButtonText: { color: '#FFFFFF', fontSize: 20, fontWeight: 'bold' },
+  cancelButton: { borderWidth: 2, borderColor: '#CCCCCC', padding: 18, borderRadius: 25, alignItems: 'center', marginBottom: 20 },
+  cancelButtonText: { color: '#CCCCCC', fontSize: 20, fontWeight: 'bold' },
+  loginRedirect: { textAlign: 'center', color: '#DA0037', fontSize: 16, marginTop: 10, textDecorationLine: 'underline' },
 });

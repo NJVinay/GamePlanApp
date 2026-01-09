@@ -18,7 +18,7 @@ export default function StudentProfileScreen({ route, navigation }) {
   const { student } = route.params || {};
   const [studentData, setStudentData] = useState(student || null);
   const [loading, setLoading] = useState(!student);
-//ref: https://dev.to/itselftools/seamlessly-fetch-data-in-real-time-with-firebase-and-react-hooks-2g5
+  //ref: https://dev.to/itselftools/seamlessly-fetch-data-in-real-time-with-firebase-and-react-hooks-2g5
   useEffect(() => {
     if (!student) {
       const fetchStudentData = async () => {
@@ -129,13 +129,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 10,
   },
-  profileInitial: { fontSize: 36, color: '#FFFFFF', fontWeight: 'bold' },
-  profileName: { fontSize: 24, color: '#FFFFFF' },
-  profileId: { fontSize: 16, color: '#CCCCCC' },
-  sectionTitle: { fontSize: 18, color: '#DA0037', marginBottom: 10 },
+  profileInitial: { fontSize: 48, color: '#FFFFFF', fontWeight: 'bold' },
+  profileName: { fontSize: 28, color: '#FFFFFF', fontWeight: 'bold' },
+  profileId: { fontSize: 18, color: '#CCCCCC' },
+  sectionTitle: { fontSize: 20, color: '#DA0037', marginBottom: 10, fontWeight: 'bold' },
   infoSection: { backgroundColor: '#1E1E1E', padding: 15, borderRadius: 10 },
-  infoLabel: { color: '#CCCCCC', marginBottom: 5 },
-  infoValue: { color: '#FFFFFF', fontSize: 16 },
+  infoLabel: { color: '#CCCCCC', marginBottom: 5, fontSize: 18 },
+  infoValue: { color: '#FFFFFF', fontSize: 18 },
   settingsIcon: {
     position: 'absolute',
     top: 10,
