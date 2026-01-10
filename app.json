@@ -13,10 +13,7 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.anonymous.GamePlan",
-      "config": {
-        "googleMapsApiKey": "AIzaSyDFUNL-elICU4F7p_lBhoPZm-78_H1AtYU"
-      }
+      "bundleIdentifier": "com.anonymous.GamePlan"
     },
     "android": {
       "adaptiveIcon": {
@@ -28,12 +25,7 @@
       "permissions": [
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION"
-      ],
-      "config": {
-        "googleMaps": {
-          "apiKey": "AIzaSyDFUNL-elICU4F7p_lBhoPZm-78_H1AtYU"
-        }
-      }
+      ]
     },
     "web": {
       "favicon": "./assets/logo.png",
