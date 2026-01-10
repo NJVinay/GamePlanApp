@@ -37,3 +37,6 @@ yarn-error.*
 *.tsbuildinfo
 
 __MACOSX/
+
+# Local Netlify folder
+.netlify
