@@ -305,7 +305,7 @@ _Trainer Account:_
 _Student Account:_
 
 - Email: test.student@gameplan.com
-- Password: Student123!
+- Password: Student123
 
 **Note:** This is a demonstration project. Test data may be reset periodically.
 
