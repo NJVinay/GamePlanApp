@@ -331,11 +331,9 @@ This project was developed as part of the academic curriculum at **Blekinge Inst
 ## Contact & Links
 
 **Live Application:** [gameplanapp.netlify.app](https://gameplanapp.netlify.app)  
-**GitHub Repository:** [github.com/NJVinay/GamePlanApp](https://github.com/NJVinay/GamePlanApp)  
 **Developer:** Vinay NJ  
 **Institution:** Blekinge Institute of Technology
 
----
 
 **License:** MIT  
 **Last Updated:** January 2026
