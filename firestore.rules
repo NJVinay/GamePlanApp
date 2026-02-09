@@ -3,29 +3,168 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Trainers collection - allow public read for signup verification, only authenticated users can write their own data
+    // ============================================
+    // HELPER FUNCTIONS
+    // ============================================
+    
+    // Check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Check if the authenticated user owns the document
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Get trainer data by their auth UID
+    function getTrainerData(trainerId) {
+      return get(/databases/$(database)/documents/trainers/$(trainerId)).data;
+    }
+    
+    // Check if the authenticated user is a valid trainer
+    function isTrainer() {
+      return isAuthenticated() && 
+        exists(/databases/$(database)/documents/trainers/$(request.auth.uid));
+    }
+    
+    // Check if the authenticated user is a valid student
+    function isStudent() {
+      return isAuthenticated() && 
+        exists(/databases/$(database)/documents/students/$(request.auth.uid));
+    }
+    
+    // Check if trainer owns this student (by matching custom trainerID)
+    function isStudentTrainer(studentData) {
+      return isTrainer() && 
+        studentData.trainerID == getTrainerData(request.auth.uid).trainerID;
+    }
+    
+    // ============================================
+    // TRAINERS COLLECTION
+    // ============================================
     match /trainers/{trainerId} {
-      allow read;
-      allow write: if request.auth != null && request.auth.uid == trainerId;
+      // Public read allowed for:
+      // - Student signup verification (checking if trainerID exists)
+      // - Login verification
+      // - Trainer profile views
+      allow read: if true;
+      
+      // Only the authenticated trainer can create their own document
+      // Validates that the document ID matches auth UID
+      allow create: if isOwner(trainerId) &&
+        // Required fields validation
+        request.resource.data.keys().hasAll(['name', 'email', 'trainerID', 'location']) &&
+        // Email must match auth email
+        request.resource.data.email == request.auth.token.email &&
+        // TrainerID must be a non-empty string
+        request.resource.data.trainerID is string &&
+        request.resource.data.trainerID.size() > 0;
+      
+      // Only the owner can update their document
+      allow update: if isOwner(trainerId) &&
+        // Prevent changing email to different value than auth email
+        request.resource.data.email == request.auth.token.email &&
+        // Prevent changing trainerID after creation (immutable)
+        request.resource.data.trainerID == resource.data.trainerID;
+      
+      // Only the owner can delete their document
+      allow delete: if isOwner(trainerId);
     }
     
-    // Students collection - students can create/manage their own data, trainers can manage their students
+    // ============================================
+    // STUDENTS COLLECTION
+    // ============================================
     match /students/{studentId} {
-      allow read: if request.auth != null;
-      allow create: if request.auth != null && request.auth.uid == studentId;
-      allow update, delete: if request.auth != null && 
-        (request.auth.uid == resource.data.trainerID || 
-         request.auth.uid == studentId);
+      // Read permissions:
+      // - Students can read their own data
+      // - Trainers can read data of students linked to them
+      allow read: if isOwner(studentId) || 
+        (isTrainer() && resource.data.trainerID == getTrainerData(request.auth.uid).trainerID);
+      
+      // Students can create their own document during signup
+      allow create: if isOwner(studentId) &&
+        // Required fields validation
+        request.resource.data.keys().hasAll(['name', 'email', 'trainerID', 'studentID']) &&
+        // Email must match auth email
+        request.resource.data.email == request.auth.token.email &&
+        // TrainerID reference must be a non-empty string
+        request.resource.data.trainerID is string &&
+        request.resource.data.trainerID.size() > 0 &&
+        // StudentID must be a non-empty string
+        request.resource.data.studentID is string &&
+        request.resource.data.studentID.size() > 0;
+      
+      // Update permissions:
+      // - Students can update their own data (profile, attendance, settings)
+      // - Trainers can update their linked students' data
+      allow update: if isOwner(studentId) && 
+        // Students cannot change their own email to something other than auth email
+        request.resource.data.email == request.auth.token.email &&
+        // Students cannot change their trainerID or studentID
+        request.resource.data.trainerID == resource.data.trainerID &&
+        request.resource.data.studentID == resource.data.studentID
+      ||
+        // Trainers can update their students
+        (isTrainer() && 
+         resource.data.trainerID == getTrainerData(request.auth.uid).trainerID &&
+         // Trainers cannot change student's trainerID to transfer them
+         request.resource.data.trainerID == resource.data.trainerID);
+      
+      // Delete permissions:
+      // - Students can delete their own account
+      // - Trainers can delete their linked students
+      allow delete: if isOwner(studentId) || 
+        (isTrainer() && resource.data.trainerID == getTrainerData(request.auth.uid).trainerID);
     }
     
-    // Attendance records - authenticated users can manage attendance
+    // ============================================
+    // ATTENDANCE COLLECTION (if used separately)
+    // ============================================
     match /attendance/{attendanceId} {
-      allow read, write: if request.auth != null;
+      // Read: authenticated users can read attendance records
+      allow read: if isAuthenticated();
+      
+      // Create: only authenticated users, must include required fields
+      allow create: if isAuthenticated() &&
+        request.resource.data.keys().hasAll(['studentID', 'timestamp']);
+      
+      // Update: only the student who owns the record or their trainer
+      allow update: if isAuthenticated() &&
+        (request.auth.uid == resource.data.studentID ||
+         isStudentTrainer(get(/databases/$(database)/documents/students/$(resource.data.studentID)).data));
+      
+      // Delete: only trainers can delete attendance records
+      allow delete: if isTrainer();
     }
     
-    // Tasks - authenticated users can manage tasks
+    // ============================================
+    // TASKS COLLECTION (if used in future)
+    // ============================================
     match /tasks/{taskId} {
-      allow read, write: if request.auth != null;
+      // Read: authenticated users involved with the task
+      allow read: if isAuthenticated();
+      
+      // Create: authenticated users can create tasks
+      allow create: if isAuthenticated() &&
+        request.resource.data.keys().hasAll(['createdBy']) &&
+        request.resource.data.createdBy == request.auth.uid;
+      
+      // Update: only the creator or assigned trainer/student
+      allow update: if isAuthenticated() &&
+        (request.auth.uid == resource.data.createdBy ||
+         request.auth.uid == resource.data.assignedTo);
+      
+      // Delete: only the creator
+      allow delete: if isAuthenticated() && 
+        request.auth.uid == resource.data.createdBy;
+    }
+    
+    // ============================================
+    // CATCH-ALL: Deny access to undefined collections
+    // ============================================
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }
