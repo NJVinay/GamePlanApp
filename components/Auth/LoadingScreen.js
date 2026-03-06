@@ -22,7 +22,10 @@ export default function LoadingScreen({ navigation }) {
           const trainerDoc = await getDoc(doc(db, 'trainers', user.uid));
           if (trainerDoc.exists()) {
             console.log('Authenticated trainer found, redirecting to TrainerDashboard');
-            navigation.replace('TrainerDashboard');
+            navigation.replace('TrainerDashboard', {
+              trainerID: trainerDoc.data().trainerID,
+              trainerData: trainerDoc.data(),
+            });
             return;
           }
 
@@ -30,7 +33,10 @@ export default function LoadingScreen({ navigation }) {
           const studentDoc = await getDoc(doc(db, 'students', user.uid));
           if (studentDoc.exists()) {
             console.log('Authenticated student found, redirecting to StudentDashboard');
-            navigation.replace('StudentDashboard');
+            navigation.replace('StudentDashboard', {
+              studentID: user.uid,
+              studentData: studentDoc.data(),
+            });
             return;
           }
 
