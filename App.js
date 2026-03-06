@@ -9,8 +9,6 @@ import RegisterScreen from './components/Auth/RegisterScreen';
 import ForgotPasswordScreen from './components/Auth/ForgotPasswordScreen';
 import TrainerSignUpScreen from './components/Auth/TrainerSignUpScreen';
 import StudentSignUpScreen from './components/Auth/StudentSignUpScreen';
-import TrainerDashboardScreen from './components/Auth/TrainerDashboardScreen';
-import StudentDashboardScreen from './components/Auth/StudentDashboardScreen';
 import LoginScreen from './components/Auth/LoginScreen';
 import LoadingScreen from './components/Auth/LoadingScreen';
 import TrainerProfileScreen from './components/Auth/TrainerProfileScreen';
@@ -19,6 +17,10 @@ import StudentProfileScreen from './components/Auth/StudentProfileScreen';
 import StudentSettingsScreen from './components/Auth/StudentSettingsScreen';
 import StudentPage from './components/Auth/StudentPage';
 import AttendanceScreen from './components/Auth/AttendanceScreen';
+import { auth } from './utils/firebaseConfig';
+import { signOut } from 'firebase/auth';
+import { Ionicons } from '@expo/vector-icons';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 // Inject custom web styles
 if (Platform.OS === 'web') {
@@ -161,6 +163,7 @@ const HeaderLogo = () => (
     <Text style={styles.logoText}>
       <Text style={{ color: '#DA0037' }}>GAME</Text>
       <Text style={{ color: '#EDEDED' }}>PLAN</Text>
+      <Text style={{ fontSize: 10, color: '#888', marginLeft: 4 }}>v1.1</Text>
     </Text>
   </View>
 );
@@ -236,19 +239,49 @@ export default function App() {
               <Stack.Screen
                 name="TrainerDashboard"
                 component={TrainerDashboardScreen}
-                options={{
+                options={({ navigation }) => ({
                   title: 'Trainer Dashboard',
                   headerStyle: { backgroundColor: '#171717' },
                   headerTintColor: '#fff',
-                }}
+                  headerRight: () => (
+                    <TouchableOpacity
+                      style={{ marginRight: 15 }}
+                      onPress={async () => {
+                        try {
+                          await signOut(auth);
+                          navigation.replace('Login');
+                        } catch (error) {
+                          Alert.alert('Error', 'Failed to log out.');
+                        }
+                      }}
+                    >
+                      <Ionicons name="log-out-outline" size={24} color="#DA0037" />
+                    </TouchableOpacity>
+                  ),
+                })}
               />
               <Stack.Screen
                 name="StudentDashboard"
-                options={{
+                options={({ navigation }) => ({
                   title: 'Student Dashboard',
                   headerStyle: { backgroundColor: '#171717' },
                   headerTintColor: '#fff',
-                }}
+                  headerRight: () => (
+                    <TouchableOpacity
+                      style={{ marginRight: 15 }}
+                      onPress={async () => {
+                        try {
+                          await signOut(auth);
+                          navigation.replace('Login');
+                        } catch (error) {
+                          Alert.alert('Error', 'Failed to log out.');
+                        }
+                      }}
+                    >
+                      <Ionicons name="log-out-outline" size={24} color="#DA0037" />
+                    </TouchableOpacity>
+                  ),
+                })}
               >
                 {(props) => (
                   <StudentDashboardScreen

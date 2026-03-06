@@ -57,15 +57,7 @@ export default function StudentDashboardScreen({ navigation, trainerLocation }) 
     initializeDashboard();
   }, [studentData, trainerLocation]);
 
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      navigation.replace('Login');
-    } catch (error) {
-      console.error('Logout error:', error);
-      Alert.alert('Error', 'Failed to log out.');
-    }
-  };
+
 
   const loadTasksAndAttendance = async () => {
     try {
@@ -188,15 +180,18 @@ export default function StudentDashboardScreen({ navigation, trainerLocation }) 
     <LinearGradient colors={[theme.colors.background, theme.colors.surfaceLight]} style={styles.gradient}>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.header}>
-          <View style={{ flex: 1, alignItems: 'center', paddingLeft: 30 }}>
-            <View style={styles.profileInitialContainer}>
-              <Text style={styles.profileInitial}>
-                {studentData.name?.charAt(0).toUpperCase() || 'S'}
-              </Text>
+          <TouchableOpacity
+            style={styles.profileSummary}
+            onPress={() => navigation.navigate('StudentProfile')}
+          >
+            <View style={styles.miniProfileInitial}>
+              <Text style={styles.miniInitialText}>{getInitialLetter(studentData?.name)}</Text>
             </View>
-            <Text style={styles.profileName}>{studentData.name || 'Student Name'}</Text>
-            <Text style={styles.profileId}>ID: {studentData.studentID || 'N/A'}</Text>
-          </View>
+            <View>
+              <Text style={styles.welcomeText}>Student Dashboard</Text>
+              <Text style={styles.studentName}>{studentData?.name || 'N/A'}</Text>
+            </View>
+          </TouchableOpacity>
           <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
             <Ionicons name="log-out-outline" size={24} color={theme.colors.error} />
           </TouchableOpacity>
@@ -306,7 +301,22 @@ const styles = StyleSheet.create({
   container: { flexGrow: 1, padding: theme.spacing.lg },
   loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   loadingText: { color: theme.colors.text, marginTop: theme.spacing.sm },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: theme.spacing.lg },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },
+  profileSummary: { flexDirection: 'row', alignItems: 'center', backgroundColor: theme.colors.surface, padding: 15, borderRadius: theme.borderRadius.lg, ...theme.shadows.sm, flex: 1, marginRight: 10 },
+  miniProfileInitial: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: theme.colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 15,
+  },
+  miniInitialText: { fontSize: 24, color: '#fff', fontWeight: 'bold' },
+  welcomeText: { fontSize: 14, color: theme.colors.textSecondary },
+  studentName: { fontSize: 20, fontWeight: 'bold', color: theme.colors.text },
+  // The following styles were part of the old header structure and are no longer directly used by the new header,
+  // but are kept as per instruction to not make unrelated edits unless explicitly removed.
   profileInitialContainer: {
     width: 100,
     height: 100,

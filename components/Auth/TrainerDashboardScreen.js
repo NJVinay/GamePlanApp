@@ -61,15 +61,7 @@ export default function TrainerDashboardScreen({ navigation }) {
     fetchStudents();
   }, [trainerID]);
 
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      navigation.replace('Login');
-    } catch (error) {
-      console.error('Logout error:', error);
-      Alert.alert('Error', 'Failed to log out.');
-    }
-  };
+
 
   const filteredStudents = students.filter((student) =>
     [student.name, student.studentID]
@@ -100,21 +92,20 @@ export default function TrainerDashboardScreen({ navigation }) {
   return (
     <LinearGradient colors={[theme.colors.background, theme.colors.surfaceLight]} style={styles.gradient}>
       <View style={styles.container}>
-        <View style={styles.profileHeader}>
+        <View style={styles.topSection}>
           <TouchableOpacity
-            onPress={() => navigation.navigate('TrainerProfile', { trainerData })}
-            style={styles.profileTouchable}
+            onPress={() => navigation.navigate('TrainerProfile')}
+            style={styles.profileSummary}
           >
-            <View style={styles.profilePlaceholder}>
-              <Text style={styles.profileInitial}>
+            <View style={styles.miniProfileInitial}>
+              <Text style={styles.miniInitialText}>
                 {trainerData?.name?.charAt(0).toUpperCase() || 'T'}
               </Text>
             </View>
-            <Text style={styles.trainerName}>{trainerData?.name || 'Trainer'}</Text>
-            <Text style={styles.trainerId}>ID: {trainerID}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-            <Ionicons name="log-out-outline" size={24} color={theme.colors.error} />
+            <View>
+              <Text style={styles.welcomeText}>Welcome back,</Text>
+              <Text style={styles.trainerName}>{trainerData?.name || 'Trainer'}</Text>
+            </View>
           </TouchableOpacity>
         </View>
 
@@ -159,22 +150,21 @@ export default function TrainerDashboardScreen({ navigation }) {
 const styles = StyleSheet.create({
   gradient: { flex: 1 },
   container: { flex: 1, paddingHorizontal: theme.spacing.lg, paddingTop: theme.spacing.sm },
-  profileHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: theme.spacing.lg },
-  profileTouchable: { alignItems: 'center', flex: 1 },
-  profilePlaceholder: {
-    width: 100,
-    height: 100,
-    borderRadius: theme.borderRadius.round,
-    backgroundColor: theme.colors.surfaceLight,
+  topSection: { marginBottom: theme.spacing.lg },
+  profileSummary: { flexDirection: 'row', alignItems: 'center', backgroundColor: theme.colors.surface, padding: 15, borderRadius: theme.borderRadius.lg, ...theme.shadows.sm },
+  miniProfileInitial: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: theme.colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: theme.spacing.sm,
-    ...theme.shadows.md,
+    marginRight: 15,
   },
-  profileInitial: { fontSize: 36, color: theme.colors.text, fontWeight: theme.typography.weight.bold },
-  trainerName: { fontSize: theme.typography.size.lg, fontWeight: theme.typography.weight.bold, color: theme.colors.text },
+  miniInitialText: { fontSize: 24, color: '#fff', fontWeight: 'bold' },
+  welcomeText: { fontSize: 14, color: theme.colors.textSecondary },
+  trainerName: { fontSize: 20, fontWeight: 'bold', color: theme.colors.text },
   trainerId: { fontSize: theme.typography.size.md, color: theme.colors.textSecondary },
-  logoutButton: { padding: theme.spacing.sm },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
