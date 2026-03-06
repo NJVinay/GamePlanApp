@@ -59,13 +59,6 @@ export default function SettingsScreen({ navigation }) {
         'Profile updated locally but not synced with the server. Please check your permissions or network.'
       );
     }
-
-
-    setFullName('');
-    setTrainerAge('');
-    setSpecialty('');
-    setEmailAddress('');
-    setTrainerAddress('');
   };
 
   return (

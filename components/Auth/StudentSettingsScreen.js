@@ -61,7 +61,9 @@ export default function StudentSettingsScreen({ navigation }) {
       // Also save to AsyncStorage as backup
       await AsyncStorage.setItem('studentData', JSON.stringify(updatedStudent));
 
-      Alert.alert('Success', 'Profile updated successfully!');
+      Alert.alert('Success', 'Profile updated successfully!', [
+        { text: 'OK', onPress: () => navigation.goBack() }
+      ]);
     } catch (error) {
       console.error('Error saving data:', error);
       Alert.alert('Error', 'Failed to save changes. Please try again.');

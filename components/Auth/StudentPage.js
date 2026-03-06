@@ -92,7 +92,7 @@ export default function StudentPage({ route }) {
             </Text>
           </View>
           <Text style={styles.profileName}>{student.name}</Text>
-          <Text style={styles.profileId}>ID: 474601</Text>
+          <Text style={styles.profileId}>ID: {student.studentID}</Text>
         </View>
 
         <View style={styles.streakContainer}>
