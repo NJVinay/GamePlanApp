@@ -15,6 +15,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '../../utils/firebaseConfig';
 import { doc, getDoc } from 'firebase/firestore';
 import { getResponsiveSize, getBannerHeight, getMaxContentWidth } from '../../utils/responsive';
+import { theme } from '../../utils/theme';
 
 export default function LoginScreen({ navigation }) {
   const [isTrainer, setIsTrainer] = useState(true);
@@ -71,7 +72,7 @@ export default function LoginScreen({ navigation }) {
   };
 
   return (
-    <LinearGradient colors={['#171717', '#444444']} style={styles.gradient}>
+    <LinearGradient colors={[theme.colors.background, theme.colors.surfaceLight]} style={styles.gradient}>
       <ScrollView
         contentContainerStyle={[
           styles.scrollContainer,
@@ -90,7 +91,7 @@ export default function LoginScreen({ navigation }) {
 
         {loading ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#DA0037" />
+            <ActivityIndicator size="large" color={theme.colors.primary} />
             <Text style={styles.loadingText}>Logging In...</Text>
           </View>
         ) : (
@@ -181,72 +182,91 @@ const styles = StyleSheet.create({
   gradient: { flex: 1 },
   scrollContainer: {
     flexGrow: 1,
-    padding: 20,
+    padding: theme.spacing.lg,
     alignItems: 'center',
     minHeight: '100%',
-    paddingBottom: 40,
+    paddingBottom: theme.spacing.xxl,
     alignSelf: 'center',
     width: '100%',
   },
-  imageContainer: { width: '100%', alignItems: 'center', marginBottom: 20 },
+  imageContainer: { width: '100%', alignItems: 'center', marginBottom: theme.spacing.lg },
   bannerImage: {
     width: '100%',
     maxWidth: 600,
   },
   loadingContainer: { alignItems: 'center', justifyContent: 'center', flex: 1 },
-  loadingText: { marginTop: 10, color: '#EDEDED', fontSize: 18, fontStyle: 'italic' },
+  loadingText: { marginTop: theme.spacing.sm, color: theme.colors.secondary, fontSize: theme.typography.size.md, fontStyle: 'italic' },
   toggleBox: {
     flexDirection: 'row',
-    borderWidth: 2,
-    borderColor: '#DA0037',
-    borderRadius: 30,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    borderRadius: theme.borderRadius.round,
     overflow: 'hidden',
-    backgroundColor: '#444444',
-    marginBottom: 20,
+    backgroundColor: theme.colors.surfaceLight,
+    marginBottom: theme.spacing.lg,
     width: '100%',
+    ...theme.shadows.sm,
   },
-  toggleButton: { flex: 1, paddingVertical: 16, alignItems: 'center', justifyContent: 'center' },
-  activeToggle: { backgroundColor: '#DA0037' },
-  toggleText: { fontSize: 18, color: '#EDEDED', fontWeight: 'bold' },
-  activeToggleText: { color: '#FFFFFF', fontWeight: 'bold' },
-  label: { fontSize: 18, color: '#EDEDED', alignSelf: 'flex-start', marginBottom: 10, fontWeight: '600' },
+  toggleButton: { flex: 1, paddingVertical: theme.spacing.md, alignItems: 'center', justifyContent: 'center' },
+  activeToggle: { backgroundColor: theme.colors.primary },
+  toggleText: { fontSize: theme.typography.size.md, color: theme.colors.textSecondary, fontWeight: theme.typography.weight.semiBold },
+  activeToggleText: { color: theme.colors.text, fontWeight: theme.typography.weight.bold },
+  label: { fontSize: theme.typography.size.md, color: theme.colors.secondary, alignSelf: 'flex-start', marginBottom: theme.spacing.sm, fontWeight: theme.typography.weight.semiBold },
   input: {
-    borderWidth: 2,
-    borderColor: '#555555',
-    borderRadius: 10,
-    padding: 16,
-    marginBottom: 20,
-    backgroundColor: '#1E1E1E',
-    color: '#FFFFFF',
-    fontSize: 17,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    borderRadius: theme.borderRadius.lg,
+    padding: theme.spacing.md,
+    marginBottom: theme.spacing.lg,
+    backgroundColor: theme.colors.surface,
+    color: theme.colors.text,
+    fontSize: theme.typography.size.md,
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
+    ...theme.shadows.sm,
   },
-  passwordInput: { flex: 1, color: '#FFFFFF', fontSize: 17 },
-  showPassword: { fontSize: 17, color: '#CCCCCC', marginLeft: 10 },
-  forgotPassword: { color: '#EDEDED', alignSelf: 'flex-end', fontSize: 16, marginBottom: 20 },
-  loginButton: { backgroundColor: '#DA0037', paddingVertical: 18, borderRadius: 25, alignItems: 'center', width: '100%', marginBottom: 20 },
-  loginButtonText: { color: '#FFFFFF', fontSize: 20, fontWeight: 'bold' },
-  separator: { flexDirection: 'row', alignItems: 'center', marginBottom: 20, width: '100%' },
-  line: { flex: 1, height: 1, backgroundColor: '#555555' },
-  orText: { marginHorizontal: 10, color: '#EDEDED', fontSize: 16 },
+  passwordInput: { flex: 1, color: theme.colors.text, fontSize: theme.typography.size.md },
+  showPassword: { fontSize: theme.typography.size.md, color: theme.colors.textSecondary, marginLeft: theme.spacing.sm },
+  forgotPassword: { color: theme.colors.secondary, alignSelf: 'flex-end', fontSize: theme.typography.size.md, marginBottom: theme.spacing.lg },
+  loginButton: {
+    backgroundColor: theme.colors.primary,
+    paddingVertical: theme.spacing.md,
+    borderRadius: theme.borderRadius.round,
+    alignItems: 'center',
+    width: '100%',
+    marginBottom: theme.spacing.lg,
+    ...theme.shadows.lg,
+  },
+  loginButtonText: { color: theme.colors.text, fontSize: theme.typography.size.lg, fontWeight: theme.typography.weight.bold },
+  separator: { flexDirection: 'row', alignItems: 'center', marginBottom: theme.spacing.lg, width: '100%' },
+  line: { flex: 1, height: 1, backgroundColor: theme.colors.border },
+  orText: { marginHorizontal: theme.spacing.sm, color: theme.colors.textSecondary, fontSize: theme.typography.size.md },
   noteContainer: {
-    marginTop: 20,
-    padding: 18,
-    backgroundColor: 'rgba(218, 0, 55, 0.1)',
-    borderRadius: 10,
+    marginTop: theme.spacing.lg,
+    padding: theme.spacing.md,
+    backgroundColor: theme.colors.primaryLight,
+    borderRadius: theme.borderRadius.lg,
     borderWidth: 1,
-    borderColor: 'rgba(218, 0, 55, 0.3)',
+    borderColor: theme.colors.primaryDark,
     width: '100%',
   },
   noteText: {
-    color: '#CCCCCC',
-    fontSize: 16,
+    color: theme.colors.textSecondary,
+    fontSize: theme.typography.size.sm,
     textAlign: 'center',
     lineHeight: 22,
     fontStyle: 'italic'
   },
-  signUpButton: { borderWidth: 2, borderColor: '#EDEDED', paddingVertical: 18, borderRadius: 25, alignItems: 'center', backgroundColor: '#444444', width: '100%' },
-  signUpText: { color: '#EDEDED', fontSize: 20, fontWeight: 'bold' },
+  signUpButton: {
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    paddingVertical: theme.spacing.md,
+    borderRadius: theme.borderRadius.round,
+    alignItems: 'center',
+    backgroundColor: theme.colors.surfaceLight,
+    width: '100%',
+    ...theme.shadows.sm,
+  },
+  signUpText: { color: theme.colors.secondary, fontSize: theme.typography.size.lg, fontWeight: theme.typography.weight.bold },
 });

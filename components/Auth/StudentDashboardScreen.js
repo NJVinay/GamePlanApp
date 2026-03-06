@@ -14,6 +14,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location'; //ref: https://codezup.com/react-native-geolocation-api-location-based-services
 import { getDistance } from 'geolib'; //ref:https://devbrite.io/react-native-geolocation
 import { Calendar } from 'react-native-calendars';
+import { theme } from '../../utils/theme';
 
 export default function StudentDashboardScreen({ navigation, route, trainerLocation }) {
   const { studentData } = route.params || {};
@@ -100,7 +101,7 @@ export default function StudentDashboardScreen({ navigation, route, trainerLocat
           [today]: {
             selected: true,
             marked: true,
-            selectedColor: '#DA0037',
+            selectedColor: theme.colors.primary,
           },
         };
         setAttendanceDates(updatedDates);
@@ -164,14 +165,14 @@ export default function StudentDashboardScreen({ navigation, route, trainerLocat
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#DA0037" />
+        <ActivityIndicator size="large" color={theme.colors.primary} />
         <Text style={styles.loadingText}>Loading Dashboard...</Text>
       </View>
     );
   }
 
   return (
-    <LinearGradient colors={['#171717', '#444444']} style={styles.gradient}>
+    <LinearGradient colors={[theme.colors.background, theme.colors.surfaceLight]} style={styles.gradient}>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.header}>
           <View style={styles.profileInitialContainer}>
@@ -202,15 +203,15 @@ export default function StudentDashboardScreen({ navigation, route, trainerLocat
           markedDates={attendanceDates}
           style={styles.calendar}
           theme={{
-            calendarBackground: '#1E1E1E',
-            textSectionTitleColor: '#DA0037',
-            selectedDayBackgroundColor: '#DA0037',
-            selectedDayTextColor: '#FFFFFF',
-            todayTextColor: '#DA0037',
-            dayTextColor: '#FFFFFF',
-            textDisabledColor: '#555555',
-            monthTextColor: '#FFFFFF',
-            indicatorColor: '#DA0037',
+            calendarBackground: theme.colors.surface,
+            textSectionTitleColor: theme.colors.primary,
+            selectedDayBackgroundColor: theme.colors.primary,
+            selectedDayTextColor: theme.colors.text,
+            todayTextColor: theme.colors.primary,
+            dayTextColor: theme.colors.text,
+            textDisabledColor: theme.colors.textMuted,
+            monthTextColor: theme.colors.text,
+            indicatorColor: theme.colors.primary,
           }}
         />
 
@@ -248,7 +249,7 @@ export default function StudentDashboardScreen({ navigation, route, trainerLocat
             <Checkbox
               status={task.completed ? 'checked' : 'unchecked'}
               onPress={() => toggleTaskCompletion(selectedToggle, task.id)}
-              color="#DA0037"
+              color={theme.colors.primary}
             />
             <Text
               style={[
@@ -284,61 +285,64 @@ export default function StudentDashboardScreen({ navigation, route, trainerLocat
 
 const styles = StyleSheet.create({
   gradient: { flex: 1 },
-  container: { flexGrow: 1, padding: 20 },
+  container: { flexGrow: 1, padding: theme.spacing.lg },
   loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  loadingText: { color: '#FFFFFF', marginTop: 10 },
-  header: { alignItems: 'center', marginBottom: 20 },
+  loadingText: { color: theme.colors.text, marginTop: theme.spacing.sm },
+  header: { alignItems: 'center', marginBottom: theme.spacing.lg },
   profileInitialContainer: {
     width: 100,
     height: 100,
-    borderRadius: 50,
-    backgroundColor: '#DA0037',
+    borderRadius: theme.borderRadius.round,
+    backgroundColor: theme.colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  profileInitial: { fontSize: 48, color: '#FFFFFF', fontWeight: 'bold' },
-  profileName: { fontSize: 24, fontWeight: 'bold', color: '#FFFFFF' },
-  profileId: { fontSize: 18, color: '#CCCCCC' },
+  profileInitial: { fontSize: 48, color: theme.colors.text, fontWeight: theme.typography.weight.bold },
+  profileName: { fontSize: theme.typography.size.xl, fontWeight: theme.typography.weight.bold, color: theme.colors.text },
+  profileId: { fontSize: theme.typography.size.md, color: theme.colors.textSecondary },
   profileButton: {
-    backgroundColor: '#DA0037',
+    backgroundColor: theme.colors.primary,
     padding: 14,
-    borderRadius: 10,
-    marginBottom: 20,
+    borderRadius: theme.borderRadius.md,
+    marginBottom: theme.spacing.lg,
     alignItems: 'center',
+    ...theme.shadows.md,
   },
-  profileButtonText: { color: '#FFFFFF', fontWeight: 'bold', fontSize: 18 },
-  streakBadge: { alignItems: 'center', marginVertical: 20 },
-  streakText: { color: '#DA0037', fontSize: 18, fontWeight: 'bold' },
-  resetButton: { marginTop: 10, paddingHorizontal: 18, paddingVertical: 8, backgroundColor: '#444444', borderRadius: 10 },
-  resetButtonText: { color: '#FFFFFF', fontSize: 16, fontWeight: 'bold' },
-  calendar: { marginBottom: 20 },
-  toggleContainer: { flexDirection: 'row', justifyContent: 'space-around', marginBottom: 20 },
+  profileButtonText: { color: theme.colors.text, fontWeight: theme.typography.weight.bold, fontSize: theme.typography.size.md },
+  streakBadge: { alignItems: 'center', marginVertical: theme.spacing.lg },
+  streakText: { color: theme.colors.primary, fontSize: theme.typography.size.md, fontWeight: theme.typography.weight.bold },
+  resetButton: { marginTop: theme.spacing.sm, paddingHorizontal: 18, paddingVertical: 8, backgroundColor: theme.colors.surfaceLight, borderRadius: theme.borderRadius.md },
+  resetButtonText: { color: theme.colors.text, fontSize: theme.typography.size.md, fontWeight: theme.typography.weight.bold },
+  calendar: { marginBottom: theme.spacing.lg, borderRadius: theme.borderRadius.md, overflow: 'hidden', ...theme.shadows.sm },
+  toggleContainer: { flexDirection: 'row', justifyContent: 'space-around', marginBottom: theme.spacing.lg },
   toggleButton: {
     flex: 1,
     alignItems: 'center',
-    paddingVertical: 10,
-    backgroundColor: '#1E1E1E',
-    borderRadius: 5,
-    marginHorizontal: 5,
+    paddingVertical: theme.spacing.sm,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.sm,
+    marginHorizontal: theme.spacing.sm,
+    ...theme.shadows.sm,
   },
-  activeToggleButton: { backgroundColor: '#DA0037' },
-  toggleText: { fontSize: 16, color: '#CCCCCC' },
-  activeToggleText: { color: '#FFFFFF', fontWeight: 'bold' },
+  activeToggleButton: { backgroundColor: theme.colors.primary },
+  toggleText: { fontSize: theme.typography.size.md, color: theme.colors.textSecondary },
+  activeToggleText: { color: theme.colors.text, fontWeight: theme.typography.weight.bold },
   taskItem: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 15,
     padding: 10,
-    backgroundColor: '#1E1E1E',
-    borderRadius: 10,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.md,
+    ...theme.shadows.sm,
   },
-  taskCompleted: { backgroundColor: '#555555' },
-  taskCompletedText: { color: '#CCCCCC', textDecorationLine: 'line-through' },
-  taskName: { marginLeft: 10, fontSize: 16, color: '#FFFFFF' },
-  attendanceButton: { backgroundColor: '#DA0037', padding: 15, borderRadius: 10 },
-  attendanceButtonDisabled: { backgroundColor: '#CCCCCC' },
-  attendanceButtonText: { color: '#FFFFFF', textAlign: 'center', fontWeight: 'bold' },
-  attendanceButtonTextDisabled: { color: '#000000' },
-  saveButton: { backgroundColor: '#DA0037', padding: 15, borderRadius: 10, marginTop: 20 },
-  saveButtonText: { color: '#FFFFFF', textAlign: 'center', fontWeight: 'bold' },
+  taskCompleted: { backgroundColor: theme.colors.surfaceLight },
+  taskCompletedText: { color: theme.colors.textSecondary, textDecorationLine: 'line-through' },
+  taskName: { marginLeft: 10, fontSize: theme.typography.size.md, color: theme.colors.text },
+  attendanceButton: { backgroundColor: theme.colors.primary, padding: 15, borderRadius: theme.borderRadius.md, ...theme.shadows.md },
+  attendanceButtonDisabled: { backgroundColor: theme.colors.textSecondary, ...theme.shadows.sm },
+  attendanceButtonText: { color: theme.colors.text, textAlign: 'center', fontWeight: theme.typography.weight.bold },
+  attendanceButtonTextDisabled: { color: theme.colors.background },
+  saveButton: { backgroundColor: theme.colors.primary, padding: 15, borderRadius: theme.borderRadius.md, marginTop: theme.spacing.lg, ...theme.shadows.lg },
+  saveButtonText: { color: theme.colors.text, textAlign: 'center', fontWeight: theme.typography.weight.bold },
 });
