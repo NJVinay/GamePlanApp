@@ -9,6 +9,8 @@ import RegisterScreen from './components/Auth/RegisterScreen';
 import ForgotPasswordScreen from './components/Auth/ForgotPasswordScreen';
 import TrainerSignUpScreen from './components/Auth/TrainerSignUpScreen';
 import StudentSignUpScreen from './components/Auth/StudentSignUpScreen';
+import TrainerDashboardScreen from './components/Auth/TrainerDashboardScreen';
+import StudentDashboardScreen from './components/Auth/StudentDashboardScreen';
 import LoginScreen from './components/Auth/LoginScreen';
 import LoadingScreen from './components/Auth/LoadingScreen';
 import TrainerProfileScreen from './components/Auth/TrainerProfileScreen';
