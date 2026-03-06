@@ -8,36 +8,11 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { db } from '../../utils/firebaseConfig';
-import { doc, getDoc } from 'firebase/firestore';
+import { useTrainerContext } from './TrainerContext';
 
-export default function TrainerProfileScreen({ navigation, route }) {
-  const { trainerData } = route.params || {};
-  const [profileData, setProfileData] = useState(trainerData || null);
-  const [loading, setLoading] = useState(!trainerData);
-
-  useEffect(() => {
-    if (!profileData) {
-      const fetchTrainerData = async () => {
-        try {
-          const trainerDoc = await getDoc(doc(db, 'trainers', trainerData?.trainerID));
-          if (trainerDoc.exists()) {
-            setProfileData(trainerDoc.data());
-          } else {
-            Alert.alert('Error', 'Trainer profile not found.');
-            navigation.goBack();
-          }
-        } catch (error) {
-          console.error('Error fetching trainer profile:', error);
-          Alert.alert('Error', 'Failed to fetch trainer profile.');
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      fetchTrainerData();
-    }
-  }, [profileData]);
+export default function TrainerProfileScreen({ navigation }) {
+  const { trainerData: profileData } = useTrainerContext();
+  const loading = !profileData;
 
   const getInitialLetter = (name) => {
     return name ? name.charAt(0).toUpperCase() : '?';
@@ -57,7 +32,7 @@ export default function TrainerProfileScreen({ navigation, route }) {
         {/* Settings Button */}
         <TouchableOpacity
           style={styles.settingsButton}
-          onPress={() => navigation.navigate('SettingsScreen', { profileData })}
+          onPress={() => navigation.navigate('SettingsScreen')}
         >
           <Ionicons name="settings-outline" size={24} color="#FFFFFF" />
         </TouchableOpacity>

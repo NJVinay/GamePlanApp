@@ -10,37 +10,11 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
-//ref:https://www.freecodecamp.org/news/how-to-use-the-firebase-database-in-react/ 
-const db = getFirestore();
+import { useStudentContext } from './StudentContext';
 
-export default function StudentProfileScreen({ route, navigation }) {
-  const { student } = route.params || {};
-  const [studentData, setStudentData] = useState(student || null);
-  const [loading, setLoading] = useState(!student);
-  //ref: https://dev.to/itselftools/seamlessly-fetch-data-in-real-time-with-firebase-and-react-hooks-2g5
-  useEffect(() => {
-    if (!student) {
-      const fetchStudentData = async () => {
-        try {
-          const studentDoc = await getDoc(doc(db, 'students', student.studentID));
-          if (studentDoc.exists()) {
-            setStudentData(studentDoc.data());
-          } else {
-            Alert.alert('Error', 'Student profile not found.');
-            navigation.navigate('StudentDashboard');
-          }
-        } catch (error) {
-          console.error('Error fetching student profile:', error);
-          Alert.alert('Error', 'Failed to fetch student profile.');
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      fetchStudentData();
-    }
-  }, [student, navigation]);
+export default function StudentProfileScreen({ navigation }) {
+  const { studentData } = useStudentContext();
+  const loading = !studentData;
 
   if (loading) {
     return (
@@ -68,7 +42,7 @@ export default function StudentProfileScreen({ route, navigation }) {
         {/* Settings Icon */}
         <TouchableOpacity
           style={styles.settingsIcon}
-          onPress={() => navigation.navigate('StudentSettings', { student: studentData })}
+          onPress={() => navigation.navigate('StudentSettings')}
         >
           <Ionicons name="settings-outline" size={24} color="#FFFFFF" />
         </TouchableOpacity>
