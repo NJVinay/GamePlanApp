@@ -13,9 +13,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { db } from '../../utils/firebaseConfig';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { theme } from '../../utils/theme';
+import { useTrainerContext } from './TrainerContext';
+import { auth } from '../../utils/firebaseConfig';
+import { signOut } from 'firebase/auth';
 
-export default function TrainerDashboardScreen({ navigation, route }) {
-  const { trainerData } = route.params || {};
+export default function TrainerDashboardScreen({ navigation }) {
+  const { trainerData } = useTrainerContext();
   const trainerID = trainerData?.trainerID || '';
   const [students, setStudents] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -58,6 +61,16 @@ export default function TrainerDashboardScreen({ navigation, route }) {
     fetchStudents();
   }, [trainerID]);
 
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigation.replace('Login');
+    } catch (error) {
+      console.error('Logout error:', error);
+      Alert.alert('Error', 'Failed to log out.');
+    }
+  };
+
   const filteredStudents = students.filter((student) =>
     [student.name, student.studentID]
       .some((field) => field?.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -99,6 +112,9 @@ export default function TrainerDashboardScreen({ navigation, route }) {
             </View>
             <Text style={styles.trainerName}>{trainerData?.name || 'Trainer'}</Text>
             <Text style={styles.trainerId}>ID: {trainerID}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+            <Ionicons name="log-out-outline" size={24} color={theme.colors.error} />
           </TouchableOpacity>
         </View>
 
@@ -143,8 +159,8 @@ export default function TrainerDashboardScreen({ navigation, route }) {
 const styles = StyleSheet.create({
   gradient: { flex: 1 },
   container: { flex: 1, paddingHorizontal: theme.spacing.lg, paddingTop: theme.spacing.sm },
-  profileHeader: { alignItems: 'center', marginBottom: theme.spacing.lg },
-  profileTouchable: { alignItems: 'center' },
+  profileHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: theme.spacing.lg },
+  profileTouchable: { alignItems: 'center', flex: 1 },
   profilePlaceholder: {
     width: 100,
     height: 100,
@@ -158,6 +174,7 @@ const styles = StyleSheet.create({
   profileInitial: { fontSize: 36, color: theme.colors.text, fontWeight: theme.typography.weight.bold },
   trainerName: { fontSize: theme.typography.size.lg, fontWeight: theme.typography.weight.bold, color: theme.colors.text },
   trainerId: { fontSize: theme.typography.size.md, color: theme.colors.textSecondary },
+  logoutButton: { padding: theme.spacing.sm },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',

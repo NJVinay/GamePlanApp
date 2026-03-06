@@ -52,7 +52,7 @@ export default function TrainerProfileScreen({ navigation }) {
           <Text style={styles.infoText}>Trainer ID: {profileData?.trainerID || 'N/A'}</Text>
           <Text style={styles.infoText}>Age: {profileData?.age || 'N/A'}</Text>
           <Text style={styles.infoText}>
-            Training Address: {profileData?.trainingCenter || 'Kungsmarken'}
+            Training Address: {profileData?.address || profileData?.trainingCenter || 'N/A'}
           </Text>
           <Text style={styles.infoText}>
             Specialty: {profileData?.sports || 'N/A'}

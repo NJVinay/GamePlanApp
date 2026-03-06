@@ -32,6 +32,16 @@ export default function StudentSettingsScreen({ navigation }) {
         'Warning',
         'Student data is missing. Default values will be used until data is updated.'
       );
+    } else {
+      setName(studentData.name || '');
+      setAge(studentData.age ? studentData.age.toString() : '');
+      setGender(studentData.gender || '');
+      setEmail(studentData.email || '');
+      setAddress(studentData.address || '');
+      setTrainerId(studentData.trainerID || '');
+      setTrainerName(studentData.trainerName || '');
+      setSport(studentData.sport || '');
+      setEmergencyContact(studentData.emergencyContact || '');
     }
   }, [studentData]);
 

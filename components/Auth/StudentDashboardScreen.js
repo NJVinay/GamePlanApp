@@ -15,9 +15,12 @@ import * as Location from 'expo-location'; //ref: https://codezup.com/react-nati
 import { getDistance } from 'geolib'; //ref:https://devbrite.io/react-native-geolocation
 import { Calendar } from 'react-native-calendars';
 import { theme } from '../../utils/theme';
+import { useStudentContext } from './StudentContext';
+import { auth } from '../../utils/firebaseConfig';
+import { signOut } from 'firebase/auth';
 
-export default function StudentDashboardScreen({ navigation, route, trainerLocation }) {
-  const { studentData } = route.params || {};
+export default function StudentDashboardScreen({ navigation, trainerLocation }) {
+  const { studentData } = useStudentContext();
   const [tasks, setTasks] = useState({ Exercise: [], Practice: [] });
   const [selectedToggle, setSelectedToggle] = useState('Exercise');
   const [attendanceDates, setAttendanceDates] = useState({});
@@ -53,6 +56,16 @@ export default function StudentDashboardScreen({ navigation, route, trainerLocat
 
     initializeDashboard();
   }, [studentData, trainerLocation]);
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigation.replace('Login');
+    } catch (error) {
+      console.error('Logout error:', error);
+      Alert.alert('Error', 'Failed to log out.');
+    }
+  };
 
   const loadTasksAndAttendance = async () => {
     try {
@@ -175,13 +188,18 @@ export default function StudentDashboardScreen({ navigation, route, trainerLocat
     <LinearGradient colors={[theme.colors.background, theme.colors.surfaceLight]} style={styles.gradient}>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.header}>
-          <View style={styles.profileInitialContainer}>
-            <Text style={styles.profileInitial}>
-              {studentData.name?.charAt(0).toUpperCase() || 'S'}
-            </Text>
+          <View style={{ flex: 1, alignItems: 'center', paddingLeft: 30 }}>
+            <View style={styles.profileInitialContainer}>
+              <Text style={styles.profileInitial}>
+                {studentData.name?.charAt(0).toUpperCase() || 'S'}
+              </Text>
+            </View>
+            <Text style={styles.profileName}>{studentData.name || 'Student Name'}</Text>
+            <Text style={styles.profileId}>ID: {studentData.studentID || 'N/A'}</Text>
           </View>
-          <Text style={styles.profileName}>{studentData.name || 'Student Name'}</Text>
-          <Text style={styles.profileId}>ID: {studentData.studentID || 'N/A'}</Text>
+          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+            <Ionicons name="log-out-outline" size={24} color={theme.colors.error} />
+          </TouchableOpacity>
         </View>
 
         {/* Go to Profile Button */}
@@ -288,7 +306,7 @@ const styles = StyleSheet.create({
   container: { flexGrow: 1, padding: theme.spacing.lg },
   loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   loadingText: { color: theme.colors.text, marginTop: theme.spacing.sm },
-  header: { alignItems: 'center', marginBottom: theme.spacing.lg },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: theme.spacing.lg },
   profileInitialContainer: {
     width: 100,
     height: 100,
@@ -300,6 +318,7 @@ const styles = StyleSheet.create({
   profileInitial: { fontSize: 48, color: theme.colors.text, fontWeight: theme.typography.weight.bold },
   profileName: { fontSize: theme.typography.size.xl, fontWeight: theme.typography.weight.bold, color: theme.colors.text },
   profileId: { fontSize: theme.typography.size.md, color: theme.colors.textSecondary },
+  logoutButton: { padding: theme.spacing.sm },
   profileButton: {
     backgroundColor: theme.colors.primary,
     padding: 14,
